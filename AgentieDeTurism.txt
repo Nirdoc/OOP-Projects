@@ -1,0 +1,1393 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+
+class Activitate
+{
+
+    string nume;
+    float zile; //minim jumate de zi minim 0,5
+    bool grup;
+    bool transport;
+    int liminf;
+    int limsup;
+    bool femei;
+    bool barbati;
+    float distanta; //distanta fata de cazare la care se afla activitatea
+    string dificultateMunte;
+    string tipMuzeu;
+    bool ok;
+
+public:
+
+    Activitate(string nume,int zile,bool grup, bool transport, int liminf, int limsup, bool femei, bool barbati, float distanta, string dificultateMunte, string tipMuzeu)
+    {
+        this->nume=nume;
+        this->zile=zile;
+        try
+        {
+            if (zile < 0.5)
+            {
+                this->zile = 0.5;
+                throw 2323.f;
+            }
+
+        }
+        catch(float a)
+        {
+            cout<<"NU AI INTRODUS UN NR DE ZILE CORESPUNZATOR"<<endl;
+        }
+
+        this->grup=grup;
+        this->transport=transport;
+        this->liminf=liminf;
+        this->limsup=limsup;
+        this->femei=femei;
+        this->barbati=barbati;
+        this->distanta=distanta;
+        this->dificultateMunte=dificultateMunte;
+        this->tipMuzeu=tipMuzeu;
+        this->ok=1; // la inceput toti turistii sunt buni ptr toate actv
+    }
+    friend istream &operator >> (istream &in , Activitate &A)
+    {
+        cout<<"\nNume:";
+        in>>A.nume;
+        cout<<"\nZile:";
+        in>>A.zile;
+        cout<<"\nGrup:";
+        in>>A.grup;
+        cout<<"\nTransport:";
+        in>>A.transport;
+        cout<<"\nLimita inferioara de varsta:";
+        in>>A.liminf;
+        cout<<"\nLimita superioara de varsta:";
+        in>>A.limsup;
+        cout<<"\nFemei:";
+        in>>A.femei;
+        cout<<"\nBarbati:";
+        in>>A.barbati;
+        cout<<"\nDistanta:";
+        in>>A.distanta;
+        cout<<"\nDificultateMunte:";
+        in>>A.dificultateMunte;
+        cout<<"\nTipMuzeu:";
+        in>>A.tipMuzeu;
+        return in;
+    }
+    friend ostream &operator << (ostream &out , Activitate &A)
+    {
+        out<<A.nume<<",";
+        out<<" ";
+        out<<A.zile<<",";
+        out<<" ";
+        out<<A.grup<<",";
+        out<<" ";
+        out<<A.transport<<",";
+        out<<" ";
+        out<<A.liminf<<",";
+        out<<" ";
+        out<<A.limsup<<",";
+        out<<" ";
+        out<<A.femei<<",";
+        out<<" ";
+        out<<A.barbati<<",";
+        out<<" ";
+        out<<A.distanta<<",";
+        out<<" ";
+        out<<A.dificultateMunte<<",";
+        out<<" ";
+        out<<A.tipMuzeu<<",";
+        out<<" ";
+        out<<A.ok<<endl;
+
+        return out;
+    }
+
+    Activitate &operator = (const Activitate &activ)
+    {
+        if(this!=&activ)
+        {
+            this->barbati=activ.barbati;
+            this->femei=activ.femei;
+            this->grup=activ.grup;
+            this->liminf=activ.liminf;
+            this->limsup=activ.limsup;
+            this->nume=activ.nume;
+            this->transport=activ.transport;
+            this->zile=activ.zile;
+            this->distanta=activ.distanta;
+            this->dificultateMunte=activ.dificultateMunte;
+            this->tipMuzeu=activ.tipMuzeu;
+        }
+        return *this;
+    }
+
+
+
+
+    void set_Viabilitate(bool ok)
+    {
+        this->ok = ok;
+    }
+
+    bool get_Viabilitate()
+    {
+        return this->ok;
+    }
+
+    string getNume()
+    {
+        return this->nume;
+    }
+
+    bool getTransport()
+    {
+        return this->transport;
+    }
+
+    float getDistanta()
+    {
+        return this->distanta;
+    }
+
+    string getDificultateMunte()
+    {
+        return this->dificultateMunte;
+    }
+
+    string getTipMuzeu()
+    {
+        return this->tipMuzeu;
+    }
+
+
+
+};
+class Turist
+{
+    string nume;
+    bool sex; //0 barbat 1 femeie
+    int varsta;
+    string activitatiPreferate;
+    bool okAutovehicul;
+    bool okMunte; // ptr trasee grele pe munte
+    bool okBiserica;
+    bool okMuzeu;
+    bool okPlaja;
+    bool okCampionat;
+    bool okVaporas;
+
+public:
+
+    Turist(string nume, bool sex, int varsta, string act , bool autov)
+    {
+        this->nume=nume;
+        this->sex=sex;
+        this->varsta=varsta;
+        this->activitatiPreferate=act;
+        this->okAutovehicul=autov;
+    }
+    Turist()
+    {
+        this->nume="null";
+        this->sex=false;
+        this->varsta=0;
+        this->activitatiPreferate="null";
+        this->okAutovehicul = false;
+
+    }
+    Turist(const Turist &T)
+    {
+        this->nume = T.nume;
+        this->sex =T.sex;
+        this->activitatiPreferate=T.activitatiPreferate;
+        this->okAutovehicul=T.okAutovehicul;
+        this->varsta=T.varsta;
+    }
+    friend istream &operator >> (istream &in, Turist &T)
+    {
+        cout<<"\nNume:";
+        in >> T.nume;
+        cout<<"\nSex:";
+        in>> T.sex;
+        cout<<"\nVarsta:";
+        in>> T.varsta;
+        cout<<"\nAutovehicul:";
+        in>> T.okAutovehicul;
+        cout<<"\nActivitati preferate:";
+        in>> T.activitatiPreferate;
+        return in;
+
+    }
+    friend ostream &operator << (ostream &out, Turist &T)
+    {
+        cout<<"\nNume:";
+        out<<T.nume;
+        cout<<"\nSex:";
+        out<< T.sex;
+        cout<<"\nVarsta:";
+        out<<  T.varsta;
+        cout<<"\nAutovehicul:";
+        out<<  T.okAutovehicul;
+        cout<<"\nActivitati preferate:";
+        out<<  T.activitatiPreferate;
+        return out;
+
+    }
+
+    Turist &operator = (const Turist &turist)
+    {
+        if(this != &turist)
+        {
+            this->nume=turist.nume;
+            this->varsta=turist.varsta;
+            this->okAutovehicul=turist.okAutovehicul;
+            this->sex=turist.sex;
+            this->activitatiPreferate=turist.activitatiPreferate;
+        }
+        return *this;
+    }
+
+    bool verificaMunte()
+    {
+        if(this->varsta<16 || this->varsta>90)
+            return 0;
+        else
+            return 1;
+    }
+
+    bool verificaPlaja()
+    {
+        if(this->varsta<18)
+            return 0;
+        else
+            return 1;
+    }
+
+    bool verificaCampionat()
+    {
+        if(this->varsta<10)
+            return 0;
+        else
+            return 1;
+    }
+
+    bool verificaVaporas()
+    {
+        if(this->varsta<5)
+            return 0;
+        else
+            return 1;
+    }
+
+    bool verificaFemeie()
+    {
+        if(this->sex==1)
+            return 0;
+        else
+            return 1;
+    }
+
+    string getNume()
+    {
+        return this->nume;
+    }
+
+    string getActivitatiPreferate()
+    {
+        return this->activitatiPreferate;
+    }
+
+    bool getOkMunte()
+    {
+        return this->okMunte;
+    }
+
+    void setOkMunte(bool x)
+    {
+        this->okMunte=x;
+    }
+
+    bool getOkPlaja()
+    {
+        return this->okPlaja;
+    }
+
+    void setOkPlaja(bool x)
+    {
+        this->okPlaja=x;
+    }
+
+    bool getOkBiserica()
+    {
+        return this->okBiserica;
+    }
+
+    void setOkBiserica(bool x)
+    {
+        this->okBiserica=x;
+    }
+
+    bool getOkAutovehicul()
+    {
+        return this->okAutovehicul;
+    }
+
+    void setOkAutovehicul(bool x)
+    {
+        this->okAutovehicul=x;
+    }
+
+    bool getOkMuzeu()
+    {
+        return this->okMuzeu;
+    }
+
+    void setOkMuzeu(bool x)
+    {
+        this->okMuzeu=x;
+    }
+
+    bool getOkCampionat()
+    {
+        return this->okCampionat;
+    }
+
+    void setOkCampionat(bool x)
+    {
+        this->okCampionat=x;
+    }
+
+    bool getOkVaporas()
+    {
+        return this->okVaporas;
+    }
+
+    void setOkVaporas(bool x)
+    {
+        this->okVaporas=x;
+    }
+
+    //Daca la o activitate nu ti se pune la dispozitie un autovehicul si distanta de la cazare pana la activitate > 2000m
+    //este necesar sa ai tu un autovehicul personal altfel nu poti sa te bagi la acea activitate
+    bool verificaTransport(Activitate a)
+    {
+        if(a.getTransport()==1)
+            return 1; //daca activitatea iti pune la dispozitie transport nu conteaza daca ai sau nu masina
+        if(a.getTransport()==0 && this->getOkAutovehicul()==1)
+            return 1;
+        if(a.getTransport()==0 && this->getOkAutovehicul()==0)
+            return 0;
+    }
+
+
+    void testareActivitateMunte(Activitate a)
+    {
+        int okMunte = 0;
+
+        if(this->verificaMunte()==0 && a.getDificultateMunte()=="grea" && (a.getNume()=="munte" || a.getNume()=="biserica" || a.getNume()=="muzeu")  )
+        {
+
+            this->setOkMunte(0);
+            cout<<this->getNume()<<" nu poate sa participe la activitatea: " << a.getNume() << " pt ca dificultatea traseului este grea, iar persoana are o varsta necorespunzatoare"<<endl;;
+
+        }
+        else
+        {
+            this->setOkMunte(1);
+        }
+    }
+
+    void testareActivitatePlajaNudisti(Activitate a)
+    {
+        int okPlaja = 0;
+
+        if(this->verificaPlaja()==0 && a.getNume()=="plaja")
+        {
+            this->setOkPlaja(0);
+            cout<<this->getNume()<<" nu poate sa participe la activitatea: " << a.getNume()<< " pt ca este minor."<<endl;
+        }
+        else
+            this->setOkPlaja(1);
+    }
+
+    void testareActivitateBiserica(Activitate a)
+    {
+        int okMunte = 0;
+        int okPlaja = 0;
+        int okBiserica = 0;
+        int okMuzeu = 0;
+
+        if(this->verificaFemeie()==0 && a.getNume()=="biserica")
+        {
+            this->setOkBiserica(0);
+            cout<<this->getNume()<<" nu poate sa participe la activitatea: " << a.getNume()<< " pt ca e femeie" << endl;
+        }
+        else
+        {
+            this->setOkBiserica(1);
+        }
+    }
+
+    void testareActivitateMuzeu(Activitate a)
+    {
+        int okMuzeu = 0;
+
+        if(this->verificaFemeie()==0 && a.getTipMuzeu()=="stiintific" && (a.getNume()=="munte" || a.getNume()=="biserica" || a.getNume()=="muzeu")   )
+        {
+            this->setOkMuzeu(0);
+            cout<<this->getNume()<<" nu poate sa participe la activitatea: " << a.getNume()<< " pt ca este femeie si se viziteaza un muzeu stiintific"<< endl;
+        }
+        else
+            this->setOkMuzeu(1);
+
+    }
+
+    void testareActivitateCampionat(Activitate a)
+    {
+        int okCampionat = 0;
+
+        if(this->verificaCampionat()==0 && a.getNume()=="campionat_de_volei")
+        {
+            this->setOkCampionat(0);
+            cout<<this->getNume()<<" nu poate sa participe la activitatea: " << a.getNume()<< " pt ca nu indeplineste conditiile de varsta ale campionatului";
+        }
+        else
+            this->setOkCampionat(1);
+    }
+
+    void testareActivitateVaporas(Activitate a)
+    {
+        int okVaporas = 0;
+
+        if(this->verificaVaporas()==0 && a.getNume()=="plimbare_cu_vaporasul")
+        {
+            this->setOkVaporas(0);
+            cout<<this->getNume()<<" nu poate sa participe la activitatea: " << a.getNume()<< " pt ca nu indeplineste conditiile de varsta ale acestei plimbari in lagul marii";
+        }
+        else
+            this->setOkVaporas(1);
+    }
+
+
+    void testareAutovehicul(Activitate a)
+    {
+        if(this->verificaTransport(a)==0 && a.getDistanta()>2000)
+        {
+            this->setOkAutovehicul(0);
+            cout<<this->getNume()<<" nu poate sa participe la activitatea: " << a.getNume()<<" pentru ca nu are si nu i se pune la dispozitie un autovehicul, iar distanta pana la activitate este > 2000" << endl;
+        }
+        else
+            this->setOkAutovehicul(1);
+    }
+
+};
+
+class Destinatie
+{
+    string nume;
+    int nr_act;
+    bool inchiriere;
+    bool nudisti;
+    bool munte;
+    bool mare;
+    vector <Activitate> Act;
+public:
+    Destinatie(string nume,int nr_act,bool munte,bool nudisti,bool inchiriere,bool mare, vector <Activitate> A)
+    {
+        this->nume=nume;
+        this->nr_act=nr_act;
+        this->inchiriere=inchiriere;
+        this->nudisti = nudisti;
+        this->munte =munte;
+        this->mare=mare;
+        //for(int i = Act.begin(); i!=Act.end() ; i++)
+        //this->Act.push_back(i);
+        for(auto i: A)
+            this->Act.push_back(i);
+// if uri ptr munte, plaja, biserica
+    }
+
+    Destinatie(const Destinatie &D)
+    {
+        this->nume=D.nume;
+        this->nr_act=D.nr_act;
+        this->inchiriere=D.inchiriere;
+        this->nudisti = D.nudisti;
+        this->munte =D.munte;
+        this->mare=D.mare;
+        //PLUS VECTORUL
+    }
+
+    friend istream &operator >>(istream &in, Destinatie &D)
+    {
+        cout<<"/nNume:";
+        in>>D.nume;
+        cout<<"/nNumar activitati:";
+        in>>D.nr_act;
+        cout<<"/nInchiriere autovehicul:";
+        in>>D.inchiriere;
+        cout<<"/nNudisti";
+        in>>D.nudisti;
+        cout<<"/nMunte:";
+        in>>D.munte;
+        cout<<"/nMare:";
+        in>>D.mare;
+        for(int i=0; i<D.nr_act; i++)
+        {
+            in>>D.Act[i];
+        }
+        return in;
+    }
+    friend ostream &operator <<(ostream &out, Destinatie &D)
+    {
+        out<<D.nume;
+        out<<" ";
+        out<<D.nr_act;
+        out<<" ";
+        out<<D.inchiriere;
+        out<<" ";
+        out<<D.nudisti;
+        out<<" ";
+        out<<D.munte;
+        out<<" ";
+        out<<D.mare;
+        out<<endl;
+        for(int i=0; i<D.nr_act; i++)
+        {
+            out<<D.Act[i];
+        }
+        return out;
+        out<<endl;
+    }
+
+    Destinatie operator = (const Destinatie &dest)
+    {
+        if(this!=&dest)
+        {
+            this->inchiriere=dest.inchiriere;
+            this->munte=dest.munte;
+            this->nr_act=dest.nr_act;
+            this->nudisti=dest.nudisti;
+            this->nume=dest.nume;
+            this->mare=dest.mare;
+            this->Act=dest.Act;
+        }
+    }
+
+    vector <Activitate> getActivitati()
+    {
+        return this->Act;
+    }
+
+};
+
+int main()
+{
+    string dificultateMunteDefault = "null";
+    string tipMuzeuDefault = "null";
+    vector<Turist> T;
+    int nr_turisti;
+    int nr_zile;
+    Turist A("A",1,15,"gratar",0);
+    Turist B("B",1,43,"plaja",1);
+    Turist C("C",0,22,"munte",1);
+    Turist D("D",1,14,"piscina",1);
+    Turist E("E",0,89,"muzeu",1);
+    Turist F("F",1,10,"circ",1);
+
+    // Turist G=F; //operator =
+
+
+    //cout<<F;
+    // cout<<G.Turist(F); //constructor de copiere
+
+    T.push_back(A);
+    T.push_back(B);
+    T.push_back(C);
+    T.push_back(D);
+    T.push_back(E);
+    T.push_back(F);
+    cout<<"Lista de turisti inscrisi la noi la agentie:"<<endl;
+    for(auto i:T)
+        cout<<i<<endl;
+    //cout<<"Nr zile:";
+    //cin>>nr_zi<<","le;
+
+    Activitate AB("biserica",5,0,0,1,22,1,1,2345,"usoara","de istorie");
+    Activitate BC("campionat_de_volei",0.1,1,0,0,43,0,1,313,dificultateMunteDefault,tipMuzeuDefault);
+    Activitate CD("munte",2,0,1,1,133,1,0,1234,"grea","de arta");
+    Activitate DE("plaja",5,0,0,0,100,0,1,2000,dificultateMunteDefault,tipMuzeuDefault);
+    Activitate FG("muzeu",7,1,1,0,14,0,1,199,"medie","stiintific");
+    Activitate GH("plimbare_cu_vaporasul",8,1,1,1,52,0,0,7000,dificultateMunteDefault,tipMuzeuDefault);
+
+    vector<vector<Activitate>> ACT(2,vector<Activitate>(3,AB));
+
+    int i=0,j=0;
+    ACT[0][i] = AB;
+    i++;
+    ACT[1][j] = BC;
+    j++;
+    ACT[1][j] = DE;
+    j++;
+    ACT[1][j] = GH;
+    j++;
+    ACT[0][i] = CD;
+    i++;
+    ACT[0][i] = FG;
+    i++;
+
+    cout<<endl<<"Lista destinatiilor disponibile momentan si a activitatiilor aferente: "<<endl;
+    Destinatie DC("Brasov",3,1,0,1,0,ACT[0]);
+    Destinatie HJ("Mamaia",3,1,0,0,1,ACT[1]);
+    cout<< DC << endl << HJ;
+    cout << endl;
+//aici afisam matricea de activitati
+    /*cout<<"Lista de activitati "<<endl;
+           for(auto i: ACT)
+           {
+               for(auto j: i)
+               {
+                   cout<<j<<endl;
+               }
+           }
+    */
+//AICI TESTAM <<","DACA UN ANUMIT TURIST ARE VOIE LA O ANUMITA ACTIVITATE
+//IN FUNCTIE DE CRITERIILE: MUNTE/PAJA/BISERICA,MUZEU/TRANSPORT
+
+    //A.testareActivitate(FG);
+    //cout<<A.getOkBiserica()<<" "<<A.getOkAutovehicul()<<" "<<A.getOkMunte()<<" "<<A.getOkPlaja()<<" "<<A.getOkMuzeu();
+
+    //cout<< endl<<endl;
+
+    //B.testareActivitate(AB);
+    //cout<<B.getOkBiserica()<<" "<<B.getOkAutovehicul()<<" "<<B.getOkMunte()<<" "<<B.getOkPlaja()<<" "<<B.getOkMuzeu();
+
+    string nume;
+    string numeDeInscriere;
+    int optiune; // 0 sau 1
+    string alegere; //da sau nu
+    string destinatie;
+    string activitate;
+    int ok;
+    cout<<endl;
+    cout<<"Bine ai venit! Te rugam sa ne spui cum te cheama."<<endl;
+    cin>>nume;
+    cout<<"Salut " + nume <<". Acestea sunt destinatiile disponibile momentan prin agentia noastra de turism: " <<endl <<endl << DC  << endl <<HJ;
+    cout<<endl<<"Te rog sa precizezi daca vii singur in aceasta vacanta sau alaturi de un grup";
+    cout<<endl<<"singur: 0" <<endl<<"grup: 1"<<endl;
+    cin>>optiune;
+    if(optiune == 0)
+    {
+        if(optiune == 0)
+            cout<<"Ai ales sa vii singur. Te rog uita-te pe lista de turisti si spune-ne cu ce nume te-ai inscris la agentia noastra de turism"<<endl;
+        cin>>numeDeInscriere;
+        cout<<endl<<"Acestea sunt datele tale: "<<endl;
+        if(numeDeInscriere == "A")
+        {
+            cout<<A;
+            cout<<endl<<"Observam ca tu ai vrea "<< A.getActivitatiPreferate()<<endl;
+            for(auto i : HJ.getActivitati())
+            {
+                if(i.getNume() == A.getActivitatiPreferate())
+                {
+                    cout<<"Ai bulan"<<endl;
+                    ok=1;
+                }
+            }
+            if(ok!=1)
+            {
+                for(auto i : HJ.getActivitati())
+                {
+                    if(i.getNume() == A.getActivitatiPreferate())
+                    {
+                        cout<<"Ai bulan"<<endl;
+                        ok=2;
+                    }
+                }
+            }
+            if(ok==1)
+            {
+                if(A.getActivitatiPreferate()=="plaja") A.testareActivitatePlajaNudisti(DE);
+                if(A.getOkPlaja() == 1 && A.getActivitatiPreferate() == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                if(A.getActivitatiPreferate()=="campionat_de_volei") A.testareActivitateCampionat(BC);
+                if(A.getOkCampionat() == 1 && A.getActivitatiPreferate() == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                if(A.getActivitatiPreferate()=="plimbare_cu_vaporasul") A.testareActivitateVaporas(GH);
+                if(A.getOkVaporas() == 1 && A.getActivitatiPreferate() == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+            }
+            if(ok==2)
+            {
+                if(A.getActivitatiPreferate()=="munte") A.testareActivitateMunte(CD);
+                if(A.getActivitatiPreferate() == "munte" && A.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                if(A.getActivitatiPreferate()=="biserica") B.testareActivitateBiserica(AB);
+                if(A.getActivitatiPreferate()=="biserica" && A.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                if(A.getActivitatiPreferate()=="muzeu") B.testareActivitateMuzeu(FG);
+                if(A.getActivitatiPreferate()=="muzeu" && A.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+            }
+
+            if(ok!=1 && ok!=2)
+            {
+                cout<<endl<<"Ne pare rau nu avem activitatea ta preferata";
+                cout<<endl<<"0->iesi din agentia de turism"<<endl;
+                cout<<"1->continua, poate gasesti cv misto"<<endl;
+                int k;
+                cin>>k;
+                if(k==0) return 0;
+                if(k==1)
+                {
+                    cout<<"Scrie te rog destinatia pe care o doresti, dar si activitatea la care vrei sa iei parte"<<endl;
+                    cin>>destinatie;
+                    cout<<endl;
+                    int nrActivitati;
+                    cout<<"La cate activitati ale destinatiei "<<destinatie<<" ai vrea sa participi?"<<endl;
+                    cin >> nrActivitati;
+                    for(int i=1; i<=nrActivitati; i++)
+                    {
+                        cout<<endl;
+                        cout<<"Activitate " << i<< ":  ";
+                        cin>>activitate;
+                        cout<<endl;
+                        if(destinatie == "Brasov")
+                        {
+                            if(optiune == 0)
+                                if(activitate == "biserica") A.testareActivitateBiserica(AB);
+                            if(activitate == "biserica" && A.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                            if(activitate == "munte") A.testareActivitateMunte(CD);
+                            if(activitate == "munte" && A.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                            if(activitate == "muzeu") A.testareActivitateMuzeu(FG);
+                            if(activitate == "muzeu" && A.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+                        }
+                        if(destinatie == "Mamaia")
+                        {
+                            if(activitate == "campionat_de_volei") A.testareActivitateCampionat(BC);
+                            if(A.getOkCampionat() == 1 && activitate == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                            if(activitate == "plaja") A.testareActivitatePlajaNudisti(DE);
+                            if(A.getOkPlaja() == 1 && activitate == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                            if(activitate == "plimbare_cu_vaporasul") A.testareActivitateVaporas(GH);
+                            if(A.getOkVaporas() == 1 && activitate == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+
+                        }
+                    }
+                }
+            }
+        }
+        if(numeDeInscriere == "B")
+        {
+            cout<<B;
+            cout<<endl<<"Observam ca tu ai vrea "<< B.getActivitatiPreferate()<<endl;
+            for(auto i : HJ.getActivitati())
+            {
+                if(i.getNume() == B.getActivitatiPreferate())
+                {
+                    cout<<"Ai bulan"<<endl;
+                    ok=1;
+                }
+            }
+            if(ok!=1)
+            {
+                for(auto i : DC.getActivitati())
+                {
+                    if(i.getNume() == B.getActivitatiPreferate())
+                    {
+                        cout<<"Ai bulan"<<endl;
+                        ok=2;
+                    }
+                }
+            }
+            if(ok==1)
+            {
+                if(B.getActivitatiPreferate()=="plaja") B.testareActivitatePlajaNudisti(DE);
+                if(B.getOkPlaja() == 1 && B.getActivitatiPreferate() == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                if(B.getActivitatiPreferate()=="campionat_de_volei") B.testareActivitateCampionat(BC);
+                if(B.getOkCampionat() == 1 && B.getActivitatiPreferate() == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                if(B.getActivitatiPreferate()=="plimbare_cu_vaporasul") B.testareActivitateVaporas(GH);
+                if(B.getOkVaporas() == 1 && B.getActivitatiPreferate() == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+            }
+            if(ok==2)
+            {
+                if(B.getActivitatiPreferate()=="munte") B.testareActivitateMunte(CD);
+                if(B.getActivitatiPreferate() == "munte" && B.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                if(B.getActivitatiPreferate()=="biserica") B.testareActivitateBiserica(AB);
+                if(B.getActivitatiPreferate()=="biserica" && B.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                if(B.getActivitatiPreferate()=="muzeu") B.testareActivitateMuzeu(FG);
+                if(B.getActivitatiPreferate()=="muzeu" && B.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+            }
+
+            if(ok!=1 && ok!=2)
+            {
+                cout<<endl<<"Ne pare rau nu avem activitatea ta preferata";
+                cout<<endl<<"0->iesi din agentia de turism"<<endl;
+                cout<<"1->continua, poate gasesti cv misto"<<endl;
+                int k;
+                cin>>k;
+                if(k==0) return 0;
+                if(k==1)
+                {
+                    cout<<"Scrie te rog destinatia pe care o doresti, dar si activitatea la care vrei sa iei parte"<<endl;
+                    cin>>destinatie;
+                    cout<<endl;
+                    int nrActivitati;
+                    cout<<"La cate activitati ale destinatiei "<<destinatie<<" ai vrea sa participi?"<<endl;
+                    cin >> nrActivitati;
+                    for(int i=1; i<=nrActivitati; i++)
+                    {
+                        cout<<endl;
+                        cout<<"Activitate " << i<< ":  ";
+                        cin>>activitate;
+                        cout<<endl;
+                        if(destinatie == "Brasov")
+                        {
+                            if(activitate == "biserica") B.testareActivitateBiserica(AB);
+                            if(activitate == "biserica" && B.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                            if(activitate == "munte") B.testareActivitateMunte(CD);
+                            if(activitate == "munte" && B.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                            if(activitate == "muzeu") B.testareActivitateMuzeu(FG);
+                            if(activitate == "muzeu" && B.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+                        }
+                        if(destinatie == "Mamaia")
+                        {
+                            if(activitate == "campionat_de_volei") B.testareActivitateCampionat(BC);
+                            if(B.getOkCampionat() == 1 && activitate == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                            if(activitate == "plaja") B.testareActivitatePlajaNudisti(DE);
+                            if(B.getOkPlaja() == 1 && activitate == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                            if(activitate == "plimbare_cu_vaporasul") B.testareActivitateVaporas(GH);
+                            if(B.getOkVaporas() == 1 && activitate == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+
+                        }
+                    }
+                }
+            }
+        }
+        if(numeDeInscriere == "C")
+        {
+            cout<<C;
+            cout<<endl<<"Observam ca tu ai vrea "<< C.getActivitatiPreferate()<<endl;
+            for(auto i : HJ.getActivitati())
+            {
+
+                if(i.getNume() == C.getActivitatiPreferate())
+                {
+                    cout<<"Ai bulan"<<endl;
+                    ok=1;
+                }
+            }
+            if(ok!=1)
+            {
+                for(auto i : DC.getActivitati())
+                {
+
+                    if(i.getNume() == C.getActivitatiPreferate())
+                    {
+                        cout<<"Ai bulan"<<endl;
+                        ok=2;
+                    }
+                }
+            }
+            if(ok==1)
+            {
+
+                if(C.getActivitatiPreferate()=="plaja") C.testareActivitatePlajaNudisti(DE);
+                if(C.getOkPlaja() == 1 && C.getActivitatiPreferate() == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                if(C.getActivitatiPreferate()=="campionat_de_volei") C.testareActivitateCampionat(BC);
+                if(C.getOkCampionat() == 1 && C.getActivitatiPreferate() == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                if(C.getActivitatiPreferate()=="plimbare_cu_vaporasul") C.testareActivitateVaporas(GH);
+                if(C.getOkVaporas() == 1 && C.getActivitatiPreferate() == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+            }
+            if(ok==2)
+            {
+                if(C.getActivitatiPreferate()=="munte") C.testareActivitateMunte(CD);
+                if(C.getActivitatiPreferate() == "munte" && C.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                if(C.getActivitatiPreferate()=="biserica") C.testareActivitateBiserica(AB);
+                if(C.getActivitatiPreferate()=="biserica" && C.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                if(C.getActivitatiPreferate()=="muzeu") C.testareActivitateMuzeu(FG);
+                if(C.getActivitatiPreferate()=="muzeu" && C.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+            }
+
+            if(ok!=1 && ok!=2)
+            {
+                cout<<endl<<"Ne pare rau nu avem activitatea ta preferata";
+                cout<<endl<<"0->iesi din agentia de turism"<<endl;
+                cout<<"1->continua, poate gasesti cv misto"<<endl;
+                int k;
+                cin>>k;
+                if(k==0) return 0;
+                if(k==1)
+                {
+                    cout<<"Scrie te rog destinatia pe care o doresti, dar si activitatea la care vrei sa iei parte"<<endl;
+                    cin>>destinatie;
+                    cout<<endl;
+                    int nrActivitati;
+                    cout<<"La cate activitati ale destinatiei "<<destinatie<<" ai vrea sa participi?"<<endl;
+                    cin >> nrActivitati;
+                    for(int i=1; i<=nrActivitati; i++)
+                    {
+                        cout<<endl;
+                        cout<<"Activitate " << i<< ":  ";
+                        cin>>activitate;
+                        cout<<endl;
+                        if(destinatie == "Brasov")
+                        {
+                            if(activitate == "biserica") C.testareActivitateBiserica(AB);
+                            if(activitate == "biserica" && C.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                            if(activitate == "munte") C.testareActivitateMunte(CD);
+                            if(activitate == "munte" && C.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                            if(activitate == "muzeu") C.testareActivitateMuzeu(FG);
+                            if(activitate == "muzeu" && C.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+                        }
+                        if(destinatie == "Mamaia")
+                        {
+                            if(activitate == "campionat_de_volei") C.testareActivitateCampionat(BC);
+                            if(C.getOkCampionat() == 1 && activitate == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                            if(activitate == "plaja") C.testareActivitatePlajaNudisti(DE);
+                            if(C.getOkPlaja() == 1 && activitate == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                            if(activitate == "plimbare_cu_vaporasul") C.testareActivitateVaporas(GH);
+                            if(C.getOkVaporas() == 1 && activitate == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+
+                        }
+                    }
+                }
+            }
+        }
+        if(numeDeInscriere == "D")
+        {
+            cout<<D;
+            cout<<endl<<"Observam ca tu ai vrea "<< D.getActivitatiPreferate()<<endl;
+            for(auto i : HJ.getActivitati())
+            {
+
+                if(i.getNume() == D.getActivitatiPreferate())
+                {
+                    cout<<"Ai bulan"<<endl;
+                    ok=1;
+                }
+            }
+            if(ok!=1)
+            {
+                for(auto i : DC.getActivitati())
+                {
+
+                    if(i.getNume() == D.getActivitatiPreferate())
+                    {
+                        cout<<"Ai bulan"<<endl;
+                        ok=2;
+                    }
+                }
+            }
+            if(ok==1)
+            {
+
+                if(D.getActivitatiPreferate()=="plaja") D.testareActivitatePlajaNudisti(DE);
+                if(D.getOkPlaja() == 1 && D.getActivitatiPreferate() == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                if(D.getActivitatiPreferate()=="campionat_de_volei") D.testareActivitateCampionat(BC);
+                if(D.getOkCampionat() == 1 && D.getActivitatiPreferate() == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                if(D.getActivitatiPreferate()=="plimbare_cu_vaporasul") D.testareActivitateVaporas(GH);
+                if(D.getOkVaporas() == 1 && D.getActivitatiPreferate() == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+            }
+            if(ok==2)
+            {
+                if(D.getActivitatiPreferate()=="munte") D.testareActivitateMunte(CD);
+                if(D.getActivitatiPreferate() == "munte" && D.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                if(D.getActivitatiPreferate()=="biserica") D.testareActivitateBiserica(AB);
+                if(D.getActivitatiPreferate()=="biserica" && D.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                if(D.getActivitatiPreferate()=="muzeu") D.testareActivitateMuzeu(FG);
+                if(D.getActivitatiPreferate()=="muzeu" && D.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+            }
+
+            if(ok!=1 && ok!=2)
+            {
+                cout<<endl<<"Ne pare rau nu avem activitatea ta preferata";
+                cout<<endl<<"0->iesi din agentia de turism"<<endl;
+                cout<<"1->continua, poate gasesti cv misto"<<endl;
+                int k;
+                cin>>k;
+                if(k==0) return 0;
+                if(k==1)
+                {
+                    cout<<"Scrie te rog destinatia pe care o doresti, dar si activitatea la care vrei sa iei parte"<<endl;
+                    cin>>destinatie;
+                    cout<<endl;
+                    int nrActivitati;
+                    cout<<"La cate activitati ale destinatiei "<<destinatie<<" ai vrea sa participi?"<<endl;
+                    cin >> nrActivitati;
+                    for(int i=1; i<=nrActivitati; i++)
+                    {
+                        cout<<endl;
+                        cout<<"Activitate " << i<< ":  ";
+                        cin>>activitate;
+                        cout<<endl;
+                        if(destinatie == "Brasov")
+                        {
+                            if(activitate == "biserica") D.testareActivitateBiserica(AB);
+                            if(activitate == "biserica" && D.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                            if(activitate == "munte") D.testareActivitateMunte(CD);
+                            if(activitate == "munte" && D.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                            if(activitate == "muzeu") D.testareActivitateMuzeu(FG);
+                            if(activitate == "muzeu" && D.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+                        }
+                        if(destinatie == "Mamaia")
+                        {
+                            if(activitate == "campionat_de_volei") D.testareActivitateCampionat(BC);
+                            if(D.getOkCampionat() == 1 && activitate == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                            if(activitate == "plaja") D.testareActivitatePlajaNudisti(DE);
+                            if(D.getOkPlaja() == 1 && activitate == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                            if(activitate == "plimbare_cu_vaporasul") D.testareActivitateVaporas(GH);
+                            if(D.getOkVaporas() == 1 && activitate == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+
+                        }
+                    }
+                }
+            }
+        }
+        if(numeDeInscriere == "E")
+        {
+            cout<<E;
+            cout<<endl<<"Observam ca tu ai vrea "<< E.getActivitatiPreferate()<<endl;
+            for(auto i : HJ.getActivitati())
+            {
+
+                if(i.getNume() == E.getActivitatiPreferate())
+                {
+                    cout<<"Ai bulan"<<endl;
+                    ok=1;
+                }
+            }
+            if(ok!=1)
+            {
+                for(auto i : DC.getActivitati())
+                {
+
+                    if(i.getNume() == E.getActivitatiPreferate())
+                    {
+                        cout<<"Ai bulan"<<endl;
+                        ok=2;
+                    }
+                }
+            }
+            if(ok==1)
+            {
+
+                if(E.getActivitatiPreferate()=="plaja") E.testareActivitatePlajaNudisti(DE);
+                if(E.getOkPlaja() == 1 && E.getActivitatiPreferate() == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                if(E.getActivitatiPreferate()=="campionat_de_volei") E.testareActivitateCampionat(BC);
+                if(E.getOkCampionat() == 1 && E.getActivitatiPreferate() == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                if(E.getActivitatiPreferate()=="plimbare_cu_vaporasul") E.testareActivitateVaporas(GH);
+                if(E.getOkVaporas() == 1 && E.getActivitatiPreferate() == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+            }
+            if(ok==2)
+            {
+                if(E.getActivitatiPreferate()=="munte") E.testareActivitateMunte(CD);
+                if(E.getActivitatiPreferate() == "munte" && E.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                if(E.getActivitatiPreferate()=="biserica") E.testareActivitateBiserica(AB);
+                if(E.getActivitatiPreferate()=="biserica" && E.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                if(E.getActivitatiPreferate()=="muzeu") E.testareActivitateMuzeu(FG);
+                if(E.getActivitatiPreferate()=="muzeu" && E.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+            }
+
+            if(ok!=1 && ok!=2)
+            {
+                cout<<endl<<"Ne pare rau nu avem activitatea ta preferata";
+                cout<<endl<<"0->iesi din agentia de turism"<<endl;
+                cout<<"1->continua, poate gasesti cv misto"<<endl;
+                int k;
+                cin>>k;
+                if(k==0) return 0;
+                if(k==1)
+                {
+                    cout<<"Scrie te rog destinatia pe care o doresti, dar si activitatea la care vrei sa iei parte"<<endl;
+                    cin>>destinatie;
+                    cout<<endl;
+                    int nrActivitati;
+                    cout<<"La cate activitati ale destinatiei "<<destinatie<<" ai vrea sa participi?"<<endl;
+                    cin >> nrActivitati;
+                    for(int i=1; i<=nrActivitati; i++)
+                    {
+                        cout<<endl;
+                        cout<<"Activitate " << i<< ":  ";
+                        cin>>activitate;
+                        cout<<endl;
+                        if(destinatie == "Brasov")
+                        {
+                            if(activitate == "biserica") E.testareActivitateBiserica(AB);
+                            if(activitate == "biserica" && E.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                            if(activitate == "munte") E.testareActivitateMunte(CD);
+                            if(activitate == "munte" && E.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                            if(activitate == "muzeu") E.testareActivitateMuzeu(FG);
+                            if(activitate == "muzeu" && E.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+                        }
+                        if(destinatie == "Mamaia")
+                        {
+                            if(activitate == "campionat_de_volei") E.testareActivitateCampionat(BC);
+                            if(E.getOkCampionat() == 1 && activitate == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                            if(activitate == "plaja") E.testareActivitatePlajaNudisti(DE);
+                            if(E.getOkPlaja() == 1 && activitate == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                            if(activitate == "plimbare_cu_vaporasul") E.testareActivitateVaporas(GH);
+                            if(E.getOkVaporas() == 1 && activitate == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+
+                        }
+                    }
+                }
+            }
+        }
+        if(numeDeInscriere == "F")
+        {
+            cout<<F;
+            cout<<endl<<"Observam ca tu ai vrea "<< F.getActivitatiPreferate()<<endl;
+            for(auto i : HJ.getActivitati())
+            {
+
+                if(i.getNume() == F.getActivitatiPreferate())
+                {
+                    cout<<"Ai bulan"<<endl;
+                    ok=1;
+                }
+            }
+            if(ok!=1)
+            {
+                for(auto i : DC.getActivitati())
+                {
+
+                    if(i.getNume() == F.getActivitatiPreferate())
+                    {
+                        cout<<"Ai bulan"<<endl;
+                        ok=2;
+                    }
+                }
+            }
+            if(ok==1)
+            {
+
+                if(F.getActivitatiPreferate()=="plaja") F.testareActivitatePlajaNudisti(DE);
+                if(F.getOkPlaja() == 1 && F.getActivitatiPreferate() == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                if(F.getActivitatiPreferate()=="campionat_de_volei") F.testareActivitateCampionat(BC);
+                if(F.getOkCampionat() == 1 && F.getActivitatiPreferate() == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                if(F.getActivitatiPreferate()=="plimbare_cu_vaporasul") F.testareActivitateVaporas(GH);
+                if(F.getOkVaporas() == 1 && F.getActivitatiPreferate() == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+            }
+            if(ok==2)
+            {
+                if(F.getActivitatiPreferate()=="munte") F.testareActivitateMunte(CD);
+                if(F.getActivitatiPreferate() == "munte" && F.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                if(F.getActivitatiPreferate()=="biserica") F.testareActivitateBiserica(AB);
+                if(F.getActivitatiPreferate()=="biserica" && F.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                if(F.getActivitatiPreferate()=="muzeu") F.testareActivitateMuzeu(FG);
+                if(F.getActivitatiPreferate()=="muzeu" && F.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+            }
+
+            if(ok!=1 && ok!=2)
+            {
+                cout<<endl<<"Ne pare rau nu avem activitatea ta preferata";
+                cout<<endl<<"0->iesi din agentia de turism"<<endl;
+                cout<<"1->continua, poate gasesti cv misto"<<endl;
+                int k;
+                cin>>k;
+                if(k==0) return 0;
+                if(k==1)
+                {
+                    cout<<"Scrie te rog destinatia pe care o doresti, dar si activitatea la care vrei sa iei parte"<<endl;
+                    cin>>destinatie;
+                    cout<<endl;
+                    int nrActivitati;
+                    cout<<"La cate activitati ale destinatiei "<<destinatie<<" ai vrea sa participi?"<<endl;
+                    cin >> nrActivitati;
+                    for(int i=1; i<=nrActivitati; i++)
+                    {
+                        cout<<endl;
+                        cout<<"Activitate " << i<< ":  ";
+                        cin>>activitate;
+                        cout<<endl;
+                        if(destinatie == "Brasov")
+                        {
+                            if(activitate == "biserica") F.testareActivitateBiserica(AB);
+                            if(activitate == "biserica" && F.getOkBiserica() == 1) cout<<"Felicitari te-ai inscris la activitatea \"biserica\"";
+                            if(activitate == "munte") F.testareActivitateMunte(CD);
+                            if(activitate == "munte" && F.getOkMunte() == 1) cout<<"Felicitari te-ai inscris la activitatea \"munte\"";
+                            if(activitate == "muzeu") F.testareActivitateMuzeu(FG);
+                            if(activitate == "muzeu" && F.getOkMuzeu() == 1) cout<<"Felicitari te-ai inscris la activitatea \"muzeu\"";
+                        }
+                        if(destinatie == "Mamaia")
+                        {
+                            if(activitate == "campionat_de_volei") F.testareActivitateCampionat(BC);
+                            if(F.getOkCampionat() == 1 && activitate == "campionat_de_volei") cout<<"Felicitari te-ai inscris la activitatea \"campionat_de_volei\"";
+                            if(activitate == "plaja") F.testareActivitatePlajaNudisti(DE);
+                            if(F.getOkPlaja() == 1 && activitate == "plaja") cout<<"Felicitari te-ai inscris la activitatea \"plaja\"";
+                            if(activitate == "plimbare_cu_vaporasul") F.testareActivitateVaporas(GH);
+                            if(F.getOkVaporas() == 1 && activitate == "plimbare_cu_vaporasul") cout<<"Felicitari te-ai inscris la activitatea \"plimbare_cu_vaporasul\"";
+
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    if(optiune == 1)
+    {
+        vector<Turist> grupDeTuristi;
+        cout<<"Ati ales sa veniti in grup . Cati sunteti?"<<endl;
+        int nrTuristi;
+        cin>>nrTuristi;
+        cout<<"Introdu numele colegilor tai"<<endl;
+
+        if(nume=="A") grupDeTuristi.push_back(A);
+        if(nume=="B") grupDeTuristi.push_back(B);
+        if(nume=="C") grupDeTuristi.push_back(C);
+        if(nume=="D") grupDeTuristi.push_back(D);
+        if(nume=="E") grupDeTuristi.push_back(E);
+        if(nume=="F") grupDeTuristi.push_back(F);
+
+        for(int i=0; i<nrTuristi-1; i++)
+        {
+            //if(activitatePreferata=="munte") k.testareActivitateMunte(CD);
+            char X;
+            cin>>X;
+            if(X=='A') grupDeTuristi.push_back(A);
+            if(X=='B') grupDeTuristi.push_back(B);
+            if(X=='C') grupDeTuristi.push_back(C);
+            if(X=='D') grupDeTuristi.push_back(D);
+            if(X=='E') grupDeTuristi.push_back(E);
+            if(X=='F') grupDeTuristi.push_back(F);
+        }
+
+        cout<<"Grupul este format din:"<<endl;
+        for(auto j : grupDeTuristi)
+        {
+            cout<<j<<endl;
+        }
+
+        cout<<endl<<"Selecteaza destinatia: "<<endl;
+        string dorintaDestinatie;
+        cin>>dorintaDestinatie;
+
+        if(dorintaDestinatie=="Brasov")
+        {
+
+            int flag;
+            cout<<"Introdu activitatea de grup preferata pe care vreti sa o aveti la "<<dorintaDestinatie<<":"<<endl;
+            string activitatePreferata;
+            cin>>activitatePreferata;
+            cout<<endl;
+            for(auto i : DC.getActivitati())
+            {
+                if(i.getNume()==activitatePreferata)
+                    flag=1;
+            }
+
+            if(flag==1)
+            {
+                cout<<"Aveti bulan, avem aceasta activitate la "<< dorintaDestinatie<<endl;
+                for(auto k : grupDeTuristi)
+                {
+                    if(activitatePreferata=="munte") k.testareActivitateMunte(CD);
+                    if(activitatePreferata == "munte" && k.getOkMunte() == 1)
+                    {
+                        cout<<"Felicitari "<<k.getNume()<<" te-ai inscris la activitatea \"munte\""<<endl;
+                        continue;
+                    }
+                    else if(activitatePreferata != "munte" || k.getOkMunte() == 0)
+                    {
+                        cout<<"Din pacate nu puteti sa mergeti la "<< dorintaDestinatie<< " pt. ca are loc activitatea \""<< activitatePreferata <<"\" la care aveti cel putin un coleg care nu are voie sa participe";
+                        break;
+                    }
+                    if(activitatePreferata=="biserica") k.testareActivitateBiserica(AB);
+                    if(activitate == "biserica" && k.getOkBiserica() == 1)
+                    {
+                        cout<<"Felicitari "<<k.getNume()<<" te-ai inscris la activitatea \"biserica\""<<endl;
+                        continue;
+                    }
+                    else if(activitate != "biserica" || k.getOkBiserica() == 0)
+                    {
+                        cout<<"Din pacate nu puteti sa mergeti la "<< dorintaDestinatie<< " pt. ca are loc activitatea \""<< activitatePreferata <<"\" la care aveti cel putin un coleg care nu are voie sa participe";
+                        break;
+                    }
+                    if(activitatePreferata=="muzeu") k.testareActivitateMuzeu(FG);
+                    if(activitate == "muzeu" && F.getOkMuzeu() == 1)
+                    {
+                        cout<<"Felicitari "<<k.getNume()<<" te-ai inscris la activitatea \"muzeu\""<<endl;
+                        continue;
+                    }
+                    else if(activitate != "muzeu" || F.getOkMuzeu() == 0)
+                    {
+                        cout<<"Din pacate nu puteti sa mergeti la "<< dorintaDestinatie<< " pt. ca are loc activitatea \""<< activitatePreferata <<"\" la care aveti cel putin un coleg care nu are voie sa participe";
+                        break;
+                    }
+                }
+
+            }
+
+            if(flag==0)
+            {
+                cout<<"Ne pare rau, dar nu avem aceasta activitate la noi in agentie. Te sunam noi daca e";
+            }
+        }
+
+        if(dorintaDestinatie=="Mamaia")
+        {
+
+            int flag;
+            cout<<"Introdu activitatea de grup preferata pe care vreti sa o aveti la "<<dorintaDestinatie<<":"<<endl;
+            string activitatePreferata;
+            cin>>activitatePreferata;
+            cout<<endl;
+            for(auto i : HJ.getActivitati())
+            {
+                if(i.getNume()==activitatePreferata)
+                    flag=1;
+            }
+
+            if(flag==1)
+            {
+                cout<<"Aveti bulan, avem aceasta activitate la "<< dorintaDestinatie<<endl;
+                for(auto k : grupDeTuristi)
+                {
+                    if(activitatePreferata=="plaja") k.testareActivitatePlajaNudisti(DE);
+                    if(activitatePreferata == "plaja" && k.getOkPlaja() == 1)
+                    {
+                        cout<<"Felicitari "<<k.getNume()<<" te-ai inscris la activitatea \"plaja\""<<endl;
+                        continue;
+                    }
+                    else if(activitatePreferata != "plaja" || k.getOkPlaja() == 0)
+                    {
+                        cout<<"Din pacate nu puteti sa mergeti la "<< dorintaDestinatie<< " pt. ca are loc activitatea \""<< activitatePreferata <<"\" la care aveti cel putin un coleg care nu are voie sa participe";
+                        break;
+                    }
+
+                    if(activitatePreferata=="plimbare_cu_vaporasul") k.testareActivitateVaporas(GH);
+                    if(activitate == "plimbare_cu_vaporasul" && k.getOkVaporas() == 1)
+                    {
+                        cout<<"Felicitari "<<k.getNume()<<" te-ai inscris la activitatea \"plimbare_cu_vaporasul\""<<endl;
+                        continue;
+                    }
+                    else if(activitate != "plimbare_cu_vaporasul" || k.getOkVaporas() == 0)
+                    {
+                        cout<<"Din pacate nu puteti sa mergeti la "<< dorintaDestinatie<< " pt. ca are loc activitatea \""<< activitatePreferata <<"\" la care aveti cel putin un coleg care nu are voie sa participe";
+                        break;
+                    }
+
+                    if(activitatePreferata=="campionat_de_volei") k.testareActivitateCampionat(BC);
+                    if(activitate == "campionat_de_volei" && k.getOkCampionat() == 1)
+                    {
+                        cout<<"Felicitari "<<k.getNume()<<" te-ai inscris la activitatea \"campionat_de_volei\""<<endl;
+                        continue;
+                    }
+                    else if(activitate != "campionat_de_volei" || k.getOkCampionat() == 0)
+                    {
+                        cout<<"Din pacate nu puteti sa mergeti la "<< dorintaDestinatie<< " pt. ca are loc activitatea \""<< activitatePreferata <<"\" la care aveti cel putin un coleg care nu are voie sa participe";
+                        break;
+                    }
+                }
+
+            }
+
+            if(flag==0)
+            {
+                cout<<"Ne pare rau, dar nu avem aceasta activitate la noi in agentie. Te sunam noi daca e";
+            }
+        }
+    }
+
+    return 0;
+}
+
