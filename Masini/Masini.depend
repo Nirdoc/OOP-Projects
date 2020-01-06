@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1577462914 source:d:\codrin\facultate\an ii\sem 1\poo\temelaborator\masini\masini\main.cpp
+	<iostream>
+	<string.h>
+	<vector>
+
